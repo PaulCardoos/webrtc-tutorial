@@ -1,43 +1,41 @@
-const express = require("express")
-const http = require("http")
-const app = express()
-const server = http.createServer(app)
-const socket = require("socket.io")
-const io = socket(server)
+const app = require('express')();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {cors: {origin : "*"}});
 
-const conference_room = {};
+const rooms = {}
 
-io.on("connection", socket => {
-    socket.on("join room", conference_room_id => {
-        if(conference_room[conference_room_id]){
-            conference_room[conference_room_id].push(socket.id)
+io.on('connection', socket => {
+    console.log("on connection")
+    socket.on("join room", roomID => {
+        if (rooms[roomID]) {
+            rooms[roomID].push(socket.id);
         } else {
-            conference_room[conference_room_id] = [socket.id]
+            rooms[roomID] = [socket.id];
         }
-
-        const other = conference_room[conference_room_id].find(id => id !== socket.id)
-        if(other){
-            socket.emit("other", other)
-            socket.to(other).emit("user joined", socket.id)
+        const otherUser = rooms[roomID].find(id => id !== socket.id);
+        if (otherUser) {
+            socket.emit("other", otherUser);
+            socket.to(otherUser).emit("user joined", socket.id);
         }
     });
 
-    //payload includes who am i and the sdp
-
     socket.on("offer", payload => {
-        io.to(payload.target).emit("offer", payload)
+        console.log("Offer : " + payload)
+        io.to(payload.target).emit("offer", payload);
     });
 
     socket.on("answer", payload => {
-        io.to(payload.target).emit("answer", payload)
+        io.to(payload.target).emit("answer", payload);
     });
 
     socket.on("ice-candidate", incoming => {
-        io.to(payload.target).emit("ice-candidate", incoming.candidate)
+        io.to(incoming.target).emit("ice-candidate", incoming.candidate);
     });
+
 
 });
 
-app.listen(6799, () => {
-    console.log("Server listening on port 6799")
-})
+
+server.listen(12001, () => {
+  console.log("server listening on port 12001")
+});
