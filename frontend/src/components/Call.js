@@ -16,7 +16,7 @@ const Call = (props) => {
             userVideo.current.srcObject = stream;
             userStream.current = stream;
 
-            socketRef.current = io("http://localhost:12001")
+            socketRef.current = io("http://localhost:8001")
             socketRef.current.emit("join room", props.match.params.conference_id);
 
             socketRef.current.on("other", userID => {

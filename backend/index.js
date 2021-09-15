@@ -40,6 +40,6 @@ io.on('connection', socket => {
 });
 
 
-server.listen(12001, () => {
+server.listen(8001, () => {
   console.log("server listening on port 12001")
 });
