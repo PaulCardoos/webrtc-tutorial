@@ -20,15 +20,19 @@ io.on('connection', socket => {
     });
 
     socket.on("offer", payload => {
-        console.log("Offer : " + payload)
+        for(let key of Object.keys(payload)){
+            console.log("key : " + key  + " : " + payload[key])
+        }
         io.to(payload.target).emit("offer", payload);
     });
 
     socket.on("answer", payload => {
+        console.log("Answer : " + payload)
         io.to(payload.target).emit("answer", payload);
     });
 
     socket.on("ice-candidate", incoming => {
+        console.log("Incoming : " + incoming)
         io.to(incoming.target).emit("ice-candidate", incoming.candidate);
     });
 

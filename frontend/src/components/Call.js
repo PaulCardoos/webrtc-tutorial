@@ -80,7 +80,7 @@ const Call = (props) => {
             const payload = {
                 name : socketRef.current.id,
                 target : user_id,
-                sdp : peerRef.current.setLocalDescription,
+                sdp : peerRef.current.localDescription,
             }
 
             // send new offer to the signalling server
@@ -105,7 +105,7 @@ const Call = (props) => {
         }).then(() => {
             const p = {
                 name : socketRef.current.id, 
-                target : payload.sdp,
+                target : payload.name,
                 sdp : peerRef.current.localDescription
             }
 
